@@ -16,15 +16,17 @@ h.enable();
 
 setInterval(() => {
     addMetric(h.mean);
-}, 1000);
+}, 300000);
 
 app.get('/', (req, res) => {
     const responseStatus = req.query.status || httpStatus.NOT_FOUND;
-    res.status(responseStatus).json({
+    const response = {
         data: {
             message: httpStatus[responseStatus]
         }
-    });
+    };
+    console.info(response)
+    res.status(responseStatus).json(response);
 })
 
 app.listen(port, () => {
@@ -48,12 +50,9 @@ const addMetric = (count) => {
         ],
         Namespace: 'CONTAINER/EVENT_LOOP_MEAN_DELAY'
     };
-    console.log(params)
     cw.putMetricData(params, function (err, data) {
         if (err) {
             console.log("Error", err);
-        } else {
-            console.log("Success", JSON.stringify(data));
         }
     });
 }
